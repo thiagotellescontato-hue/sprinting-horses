@@ -1,0 +1,23 @@
+{
+	"required": true,
+	"package": "net.thbtt.sprintinghorses.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"mixins": [
+		"AbstractHorseEntityMixin",
+		"CamelEntityMixin",
+		"PigEntityMixin",
+		"ServerPlayNetworkHandlerMixin",
+		"StriderEntityMixin"
+	],
+	"client": [
+		"AbstractClientPlayerEntityMixin",
+		"ClientPlayerEntityMixin",
+		"InGameHudMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	}
+}
