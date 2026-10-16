@@ -1,0 +1,85 @@
+plugins {
+	id 'net.fabricmc.fabric-loom' version "${loom_version}"
+}
+
+version = project.mod_version
+group = project.maven_group
+
+def targetMinecraftVersion = project.minecraft_version.toString()
+def minecraftDependency = (project.findProperty("minecraft_dependency") ?: "~${targetMinecraftVersion}").toString()
+def rootDir = layout.projectDirectory.dir("..")
+def officialSource = (project.findProperty("official_source") ?: "official_26_2").toString()
+def loaderDependency = (project.findProperty("loader_dependency") ?: "0.18.4").toString()
+def javaDependency = (project.findProperty("java_dependency") ?: "25").toString()
+def defaultFabricApiDependency = project.fabric_api_version.toString().replaceAll(/\+.*/, "")
+def fabricApiDependency = (project.findProperty("fabric_api_dependency") ?: defaultFabricApiDependency).toString()
+
+base {
+	archivesName = "sprinting-horses-mc${targetMinecraftVersion}"
+}
+
+repositories {
+	maven {
+		name = "TerraformersMC"
+		url = "https://maven.terraformersmc.com/releases/"
+	}
+}
+
+sourceSets {
+	main {
+		java.setSrcDirs([rootDir.dir("src/${officialSource}/java")])
+		resources.setSrcDirs([rootDir.dir("src/main/resources")])
+	}
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+	implementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+}
+
+processResources {
+	def version = project.version
+	inputs.property "version", version
+	inputs.property "minecraft_dependency", minecraftDependency
+	inputs.property "loader_dependency", loaderDependency
+	inputs.property "java_dependency", javaDependency
+	inputs.property "fabric_api_dependency", fabricApiDependency
+
+	filesMatching("fabric.mod.json") {
+		expand(
+			"version": version,
+			"minecraft_dependency": minecraftDependency,
+			"loader_dependency": loaderDependency,
+			"java_dependency": javaDependency,
+			"fabric_api_dependency": fabricApiDependency
+		)
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 25
+}
+
+java {
+	withSourcesJar()
+
+	sourceCompatibility = JavaVersion.toVersion(25)
+	targetCompatibility = JavaVersion.toVersion(25)
+}
+
+jar {
+	def projectName = project.name
+	inputs.property "projectName", projectName
+
+	from(rootDir.file("LICENSE")) {
+		rename { "${it}_$projectName"}
+	}
+}
+
+tasks.register("copyReleaseJar", Copy) {
+	dependsOn tasks.named("jar")
+	from(tasks.named("jar").flatMap { it.archiveFile })
+	into rootDir.dir("releases-jar")
+}

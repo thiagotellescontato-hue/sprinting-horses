@@ -6,11 +6,11 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.AbstractHorseEntity;
-import net.minecraft.entity.passive.CamelEntity;
 import net.thbtt.sprintinghorses.config.HorseSprintConfig;
 import net.thbtt.sprintinghorses.network.HorseSprintInputPayload;
 import net.thbtt.sprintinghorses.network.HorseSprintStaminaPayload;
 import net.thbtt.sprintinghorses.sprint.ClientHorseSprintHud;
+import net.thbtt.sprintinghorses.sprint.ClientHorseSprintHudRenderer;
 import net.thbtt.sprintinghorses.sprint.ClientHorseSprintSounds;
 import net.thbtt.sprintinghorses.sprint.HorseSprintInputs;
 import net.thbtt.sprintinghorses.sprint.HorseSprintLogic;
@@ -26,6 +26,7 @@ public class SprintingHorsesClient implements ClientModInitializer {
 			context.client().execute(() -> ClientHorseSprintHud.setStamina(payload.stamina(), payload.exhausted()))
 		);
 
+		ClientHorseSprintHudRenderer.register();
 		ClientTickEvents.END_CLIENT_TICK.register(this::tick);
 	}
 
@@ -41,20 +42,18 @@ public class SprintingHorsesClient implements ClientModInitializer {
 		boolean mounted = HorseSprintLogic.isSprintMount(vehicle);
 		boolean exhausted = mounted && ClientHorseSprintHud.isExhausted();
 		boolean sprintKeyPressed = client.options.sprintKey.isPressed();
-		if (!mounted || !sprintKeyPressed) {
+		boolean forwardKeyPressed = client.options.forwardKey.isPressed();
+		if (!mounted || !sprintKeyPressed || !forwardKeyPressed) {
 			depletedSprintLock = false;
 		} else if (HorseSprintConfig.isPartialExhaustion() && ClientHorseSprintHud.getStamina() <= 0.0F) {
 			depletedSprintLock = true;
 		}
 
-		boolean requested = mounted && !exhausted && sprintKeyPressed;
+		boolean requested = mounted && !exhausted && sprintKeyPressed && forwardKeyPressed;
 		boolean pressed = requested && !depletedSprintLock;
 		boolean jumpPressed = mounted && client.options.jumpKey.isPressed();
 
 		HorseSprintInputs.setPressed(client.player, pressed);
-		if (vehicle instanceof CamelEntity && !pressed && client.player.isSprinting()) {
-			client.player.setSprinting(false);
-		}
 		if (exhausted && jumpPressed && !lastJumpPressed && vehicle instanceof AbstractHorseEntity horse) {
 			ClientHorseSprintSounds.playExhaustedJumpSound(client, horse);
 		}

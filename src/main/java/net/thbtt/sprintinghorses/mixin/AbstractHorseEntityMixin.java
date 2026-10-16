@@ -3,6 +3,7 @@ package net.thbtt.sprintinghorses.mixin;
 import net.minecraft.entity.passive.AbstractHorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Vec3d;
+import net.thbtt.sprintinghorses.compat.HorseSprintCompat;
 import net.thbtt.sprintinghorses.sprint.ClientHorseSprintHud;
 import net.thbtt.sprintinghorses.sprint.HorseSprintLogic;
 import net.thbtt.sprintinghorses.sprint.HorseSprintState;
@@ -26,12 +27,12 @@ public class AbstractHorseEntityMixin implements HorseSprintStateAccess {
 	@Shadow
 	protected boolean jumping;
 
-	@Shadow
-	protected boolean inAir;
-
 	@Inject(method = "tick", at = @At("TAIL"))
 	private void sprintinghorses$tickSprintState(CallbackInfo ci) {
-		sprintinghorses$state.tick((AbstractHorseEntity) (Object) this);
+		AbstractHorseEntity horse = (AbstractHorseEntity) (Object) this;
+		if (HorseSprintLogic.isSprintMount(horse)) {
+			sprintinghorses$state.tick(horse);
+		}
 	}
 
 	@Inject(method = "getSaddledSpeed", at = @At("RETURN"), cancellable = true)
@@ -45,6 +46,10 @@ public class AbstractHorseEntityMixin implements HorseSprintStateAccess {
 	@Inject(method = "startJumping", at = @At("HEAD"), cancellable = true)
 	private void sprintinghorses$spendJumpStamina(int height, CallbackInfo ci) {
 		AbstractHorseEntity horse = (AbstractHorseEntity) (Object) this;
+		if (!HorseSprintLogic.isSprintMount(horse)) {
+			return;
+		}
+
 		boolean jumpBlocked = sprintinghorses$state.isJumpBlocked() || sprintinghorses$isClientJumpBlocked(horse);
 		if (sprintinghorses$state.isJumpSuppressed() || sprintinghorses$isClientJumpBlocked(horse)) {
 			sprintinghorses$clearJumpState();
@@ -64,6 +69,10 @@ public class AbstractHorseEntityMixin implements HorseSprintStateAccess {
 	@Inject(method = "setJumpStrength", at = @At("HEAD"), cancellable = true)
 	private void sprintinghorses$blockJumpWhenExhausted(int strength, CallbackInfo ci) {
 		AbstractHorseEntity horse = (AbstractHorseEntity) (Object) this;
+		if (!HorseSprintLogic.isSprintMount(horse)) {
+			return;
+		}
+
 		boolean jumpBlocked = sprintinghorses$state.isJumpBlocked() || sprintinghorses$isClientJumpBlocked(horse);
 		if (strength > 0 && (sprintinghorses$state.isJumpSuppressed() || sprintinghorses$isClientJumpBlocked(horse))) {
 			sprintinghorses$clearJumpState();
@@ -77,6 +86,10 @@ public class AbstractHorseEntityMixin implements HorseSprintStateAccess {
 	@Inject(method = "jump", at = @At("HEAD"), cancellable = true)
 	private void sprintinghorses$cancelJumpWhenExhausted(float strength, Vec3d movementInput, CallbackInfo ci) {
 		AbstractHorseEntity horse = (AbstractHorseEntity) (Object) this;
+		if (!HorseSprintLogic.isSprintMount(horse)) {
+			return;
+		}
+
 		boolean jumpBlocked = sprintinghorses$state.isJumpBlocked() || sprintinghorses$isClientJumpBlocked(horse);
 		if (sprintinghorses$state.isJumpSuppressed() || sprintinghorses$isClientJumpBlocked(horse)) {
 			sprintinghorses$clearJumpState();
@@ -90,12 +103,12 @@ public class AbstractHorseEntityMixin implements HorseSprintStateAccess {
 	@Unique
 	private boolean sprintinghorses$isExhausted(AbstractHorseEntity horse) {
 		return sprintinghorses$state.isExhausted()
-			|| (horse.getWorld().isClient() && ClientHorseSprintHud.isExhausted());
+			|| (HorseSprintCompat.getWorld(horse).isClient() && ClientHorseSprintHud.isExhausted());
 	}
 
 	@Unique
 	private boolean sprintinghorses$isClientJumpBlocked(AbstractHorseEntity horse) {
-		return horse.getWorld().isClient() && ClientHorseSprintHud.isJumpBlocked();
+		return HorseSprintCompat.getWorld(horse).isClient() && ClientHorseSprintHud.isJumpBlocked();
 	}
 
 	@Override
@@ -107,19 +120,20 @@ public class AbstractHorseEntityMixin implements HorseSprintStateAccess {
 	@Override
 	public boolean sprintinghorses$isJumpBlocked() {
 		AbstractHorseEntity horse = (AbstractHorseEntity) (Object) this;
-		return sprintinghorses$state.isJumpBlocked() || sprintinghorses$isClientJumpBlocked(horse);
+		return HorseSprintLogic.isSprintMount(horse)
+			&& (sprintinghorses$state.isJumpBlocked() || sprintinghorses$isClientJumpBlocked(horse));
 	}
 
 	@Override
 	public boolean sprintinghorses$isJumpSuppressed() {
 		AbstractHorseEntity horse = (AbstractHorseEntity) (Object) this;
-		return sprintinghorses$state.isJumpSuppressed() || sprintinghorses$isClientJumpBlocked(horse);
+		return HorseSprintLogic.isSprintMount(horse)
+			&& (sprintinghorses$state.isJumpSuppressed() || sprintinghorses$isClientJumpBlocked(horse));
 	}
 
 	@Override
 	public void sprintinghorses$clearJumpState() {
 		jumpStrength = 0.0F;
 		jumping = false;
-		inAir = false;
 	}
 }

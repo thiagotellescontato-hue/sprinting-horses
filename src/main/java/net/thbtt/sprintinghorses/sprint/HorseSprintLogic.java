@@ -4,7 +4,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.SkeletonHorseEntity;
 import net.minecraft.entity.mob.ZombieHorseEntity;
 import net.minecraft.entity.passive.AbstractHorseEntity;
-import net.minecraft.entity.passive.CamelEntity;
 import net.minecraft.entity.passive.DonkeyEntity;
 import net.minecraft.entity.passive.HorseEntity;
 import net.minecraft.entity.passive.MuleEntity;
@@ -16,6 +15,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
+import net.thbtt.sprintinghorses.compat.HorseSprintCompat;
 
 public final class HorseSprintLogic {
 	public static final int MAX_STAMINA_TICKS = 200;
@@ -24,6 +24,7 @@ public final class HorseSprintLogic {
 	public static final int DEPLETED_RECHARGE_DELAY_TICKS = 60;
 	public static final int JUMP_STAMINA_COST_TICKS = 30;
 	public static final int POST_EXHAUSTION_MOUNT_JUMP_SUPPRESS_TICKS = 10;
+	public static final int EXHAUSTED_JUMP_SOUND_COOLDOWN_TICKS = 20;
 	public static final int NO_ARMOR_STAMINA_TICKS = 200;
 	public static final int LEATHER_ARMOR_STAMINA_TICKS = 240;
 	public static final int COPPER_ARMOR_STAMINA_TICKS = 280;
@@ -53,8 +54,7 @@ public final class HorseSprintLogic {
 			|| entity instanceof ZombieHorseEntity
 			|| entity instanceof SkeletonHorseEntity
 			|| entity instanceof DonkeyEntity
-			|| entity instanceof MuleEntity
-			|| entity instanceof CamelEntity;
+			|| entity instanceof MuleEntity;
 	}
 
 	public static boolean canSprint(Entity entity, PlayerEntity player) {
@@ -66,8 +66,7 @@ public final class HorseSprintLogic {
 	public static boolean shouldSprint(AbstractHorseEntity horse, PlayerEntity player) {
 		return canSprint(horse, player)
 			&& horse.isTame()
-			&& HorseSprintInputs.isPressed(player)
-			&& player.forwardSpeed > 0.0F;
+			&& HorseSprintInputs.isPressed(player);
 	}
 
 	public static boolean isSprintRequested(AbstractHorseEntity horse, PlayerEntity player) {
@@ -101,18 +100,13 @@ public final class HorseSprintLogic {
 			return SoundEvents.ENTITY_MULE_ANGRY;
 		}
 
-		if (horse instanceof CamelEntity) {
-			return SoundEvents.ENTITY_CAMEL_DASH_READY;
-		}
-
 		return SoundEvents.ENTITY_HORSE_ANGRY;
 	}
 
 	private static boolean isUnarmoredSprintMount(AbstractHorseEntity horse) {
 		return horse instanceof DonkeyEntity
 			|| horse instanceof MuleEntity
-			|| horse instanceof SkeletonHorseEntity
-			|| horse instanceof CamelEntity;
+			|| horse instanceof SkeletonHorseEntity;
 	}
 
 	private static ArmorSprintStats getArmorStats(AbstractHorseEntity horse) {
@@ -147,11 +141,12 @@ public final class HorseSprintLogic {
 	}
 
 	private static ItemStack getArmorStack(AbstractHorseEntity horse) {
-		if (horse.getInventory().size() <= HORSE_ARMOR_SLOT) {
+		ItemStack armorStack = HorseSprintCompat.getHorseArmorStack(horse, HORSE_ARMOR_SLOT);
+		if (armorStack.isEmpty()) {
 			return ItemStack.EMPTY;
 		}
 
-		return horse.getInventory().getStack(HORSE_ARMOR_SLOT);
+		return armorStack;
 	}
 
 	private record ArmorSprintStats(float speedMultiplier, int maxStaminaTicks) {

@@ -3,6 +3,7 @@ package net.thbtt.sprintinghorses.mixin;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.passive.AbstractHorseEntity;
+import net.thbtt.sprintinghorses.compat.HorseSprintCompat;
 import net.thbtt.sprintinghorses.sprint.ClientHorseSprintHud;
 import net.thbtt.sprintinghorses.sprint.ClientHorseSprintSounds;
 import net.thbtt.sprintinghorses.sprint.HorseSprintLogic;
@@ -22,9 +23,6 @@ public class ClientPlayerEntityMixin {
 
 	@Shadow
 	private boolean riding;
-
-	@Shadow
-	private int field_3938;
 
 	@Unique
 	private boolean sprintinghorses$jumpWasPressedWhileExhausted;
@@ -67,7 +65,7 @@ public class ClientPlayerEntityMixin {
 			return;
 		}
 
-		boolean jumpPressed = player.input.jumping;
+		boolean jumpPressed = HorseSprintCompat.isJumpPressed(player);
 		if (ClientHorseSprintHud.isExhausted() && jumpPressed && !sprintinghorses$jumpWasPressedWhileExhausted && player.getVehicle() instanceof AbstractHorseEntity horse) {
 			ClientHorseSprintSounds.playExhaustedJumpSound(MinecraftClient.getInstance(), horse);
 		}
@@ -97,8 +95,7 @@ public class ClientPlayerEntityMixin {
 
 	@Unique
 	private void sprintinghorses$clearMountJumpCharge(ClientPlayerEntity player) {
-		player.input.jumping = false;
-		field_3938 = 0;
+		HorseSprintCompat.clearJumpPressed(player);
 		mountJumpStrength = 0.0F;
 		riding = false;
 	}

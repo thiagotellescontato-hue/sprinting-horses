@@ -1,6 +1,4 @@
 {
-	"item.sprintinghorses.golden_carrot_on_a_stick": "Cenoura Dourada no Palito",
-	"item.sprintinghorses.crimson_fungus_on_a_stick": "Fungo Carmesim no Palito",
 	"sprintinghorses.config.title": "Sprinting Horses",
 	"sprintinghorses.config.exhaustion": "Modo de exaustão: %s",
 	"sprintinghorses.config.exhaustion.on": "On",

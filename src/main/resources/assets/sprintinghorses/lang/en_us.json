@@ -1,6 +1,4 @@
 {
-	"item.sprintinghorses.golden_carrot_on_a_stick": "Golden Carrot on a Stick",
-	"item.sprintinghorses.crimson_fungus_on_a_stick": "Crimson Fungus on a Stick",
 	"sprintinghorses.config.title": "Sprinting Horses",
 	"sprintinghorses.config.exhaustion": "Exhaustion Mode: %s",
 	"sprintinghorses.config.exhaustion.on": "On",

@@ -1,8 +1,10 @@
 # Sprinting Horses
 
-Sprinting Horses is a Minecraft Fabric mod that adds stamina-based sprinting to rideable mounts.
+Sprinting Horses is a Minecraft Fabric mod that adds stamina-based sprinting to horses, donkeys, mules, zombie horses, and skeleton horses.
 
-Hold the sprint key while riding a supported mount to move faster. The mod adds a stamina bar above the vanilla horse jump bar, handles exhaustion, and includes new upgraded on-a-stick items for pigs and striders.
+Hold the sprint key while riding a supported equine to move faster. The mod adds a stamina bar above the vanilla horse jump bar and handles exhaustion.
+
+Current release: **1.1.0**
 
 ## Features
 
@@ -13,9 +15,8 @@ Hold the sprint key while riding a supported mount to move faster. The mod adds 
 | Exhaustion Modes | Choose between On, Partial, and Off through Mod Menu. |
 | Armor Scaling | Horse armor changes sprint speed and max stamina for horses and zombie horses. |
 | Jump Cost | Jumping spends stamina and is blocked while exhausted. |
-| Donkey, Mule, and Camel Support | These mounts use the same control style without armor scaling. |
+| Donkey and Mule Support | These mounts use the same control style without armor scaling. |
 | Undead Horse Support | Zombie horses sprint like normal horses; skeleton horses sprint without armor scaling. |
-| Custom Pig and Strider Items | Golden Carrot on a Stick and Crimson Fungus on a Stick boost pigs and striders. |
 
 ## How It Works
 
@@ -33,10 +34,7 @@ Hold the sprint key while riding a supported mount to move faster. The mod adds 
 | Zombie Horse | Yes | Prepared for armor support. |
 | Donkey | No | Uses the same sprint multiplier as an unarmored mount. |
 | Mule | No | Uses the same sprint multiplier as a donkey. |
-| Camel | No | Vanilla camel sprint behavior is normalized to work with the mod. |
 | Skeleton Horse | No | Does not use armor scaling. |
-| Pig | Item-based | Faster with Golden Carrot on a Stick. |
-| Strider | Item-based | Faster with Crimson Fungus on a Stick. |
 
 ## Exhaustion Modes
 
@@ -46,22 +44,26 @@ Hold the sprint key while riding a supported mount to move faster. The mod adds 
 | Partial | Stamina drains without the full red exhaustion mode. Sprinting and jumping are blocked at empty stamina until recovery starts. |
 | Off | Stamina does not drain and the mod HUD stays hidden. |
 
-## Items
-
-### Golden Carrot on a Stick
-
-Crafted like a Carrot on a Stick, but using a Golden Carrot instead of a regular carrot. Pigs can be controlled with it and move faster.
-
-### Crimson Fungus on a Stick
-
-Crafted like a Warped Fungus on a Stick, but using Crimson Fungus instead. Striders can be controlled with it and move faster.
-
 ## Compatibility
 
-- Minecraft: 1.21.1
+- Public release 1.1.0: Minecraft 1.21.1
 - Mod loader: Fabric
+- Java: 21 or newer
+- Required: Fabric API 0.116.12 or newer for Minecraft 1.21.1
 - Environment: Client and Server
 - Optional integration: Mod Menu
+
+The source tree retains multiversion compatibility work, but other Minecraft versions are not included in the initial 1.1.0 publication and should not be considered validated for this release.
+
+## Release Builds
+
+Release jars are generated into `releases-jar`.
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\build-releases.ps1
+```
+
+Each jar is built against the matching Minecraft, mapping, Fabric API, and Mod Menu versions for that target. Minecraft 1.21.x builds use Yarn mappings and Java 21. Minecraft 26.x builds use Mojang official names and Java 25. For the initial 1.1.0 publication, build and publish only the Minecraft 1.21.1 artifact.
 
 ## Support
 

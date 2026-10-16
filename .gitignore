@@ -2,6 +2,7 @@
 
 .gradle/
 build/
+releases-jar/
 out/
 classes/
 

@@ -1,8 +1,8 @@
 package net.thbtt.sprintinghorses.sprint;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.entity.passive.AbstractHorseEntity;
+import net.thbtt.sprintinghorses.compat.HorseSprintCompat;
 
 public final class ClientHorseSprintSounds {
 	private static long lastExhaustedJumpSoundTick = Long.MIN_VALUE;
@@ -16,11 +16,11 @@ public final class ClientHorseSprintSounds {
 		}
 
 		long time = client.world.getTime();
-		if (lastExhaustedJumpSoundTick == time) {
+		if (time - lastExhaustedJumpSoundTick < HorseSprintLogic.EXHAUSTED_JUMP_SOUND_COOLDOWN_TICKS) {
 			return;
 		}
 
 		lastExhaustedJumpSoundTick = time;
-		client.getSoundManager().play(PositionedSoundInstance.master(HorseSprintLogic.getAngrySound(horse), 1.0F, 1.0F));
+		HorseSprintCompat.playClientSound(client, HorseSprintLogic.getAngrySound(horse), 1.0F, 1.0F);
 	}
 }

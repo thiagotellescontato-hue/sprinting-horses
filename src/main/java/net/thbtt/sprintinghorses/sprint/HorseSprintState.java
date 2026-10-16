@@ -2,9 +2,10 @@ package net.thbtt.sprintinghorses.sprint;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.passive.AbstractHorseEntity;
-import net.minecraft.entity.passive.CamelEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.world.World;
+import net.thbtt.sprintinghorses.compat.HorseSprintCompat;
 import net.thbtt.sprintinghorses.config.HorseSprintConfig;
 import net.thbtt.sprintinghorses.network.HorseSprintStaminaPayload;
 
@@ -60,9 +61,6 @@ public final class HorseSprintState {
 		}
 
 		boolean requested = HorseSprintLogic.isSprintRequested(horse, rider);
-		if (horse instanceof CamelEntity && rider != null && !requested && rider.isSprinting()) {
-			rider.setSprinting(false);
-		}
 		if (!staminaEnabled) {
 			depletedSprintLock = false;
 		} else if (!requested) {
@@ -93,7 +91,7 @@ public final class HorseSprintState {
 			rechargeWithDelay(maxStaminaTicks);
 		}
 
-		if (!horse.getWorld().isClient() && rider instanceof ServerPlayerEntity serverPlayer) {
+		if (!HorseSprintCompat.getWorld(horse).isClient() && rider instanceof ServerPlayerEntity serverPlayer) {
 			ServerPlayNetworking.send(serverPlayer, new HorseSprintStaminaPayload(getStaminaFraction(maxStaminaTicks), exhausted));
 		}
 
@@ -132,12 +130,13 @@ public final class HorseSprintState {
 			return;
 		}
 
-		if (horse.getWorld().isClient()) {
+		World world = HorseSprintCompat.getWorld(horse);
+		if (world.isClient()) {
 			return;
 		}
 
-		long time = horse.getWorld().getTime();
-		if (lastExhaustedJumpFeedbackTick == time) {
+		long time = world.getTime();
+		if (time - lastExhaustedJumpFeedbackTick < HorseSprintLogic.EXHAUSTED_JUMP_SOUND_COOLDOWN_TICKS) {
 			return;
 		}
 
@@ -234,7 +233,8 @@ public final class HorseSprintState {
 	}
 
 	private void exhaustHorse(AbstractHorseEntity horse) {
-		if (horse.getWorld().isClient()) {
+		World world = HorseSprintCompat.getWorld(horse);
+		if (world.isClient()) {
 			return;
 		}
 
@@ -242,9 +242,8 @@ public final class HorseSprintState {
 		suppressJumpOnNextMount = true;
 		mountJumpSuppressTicks = 0;
 		((HorseSprintStateAccess) horse).sprintinghorses$clearJumpState();
-		playAngrySound(horse);
+		horse.playAngrySound();
 		horse.removeAllPassengers();
-		horse.getWorld().sendEntityStatus(horse, (byte) 6);
 	}
 
 	private void playAngrySound(AbstractHorseEntity horse) {

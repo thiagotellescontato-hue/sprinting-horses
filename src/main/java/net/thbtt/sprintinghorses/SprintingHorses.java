@@ -4,7 +4,6 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.thbtt.sprintinghorses.config.HorseSprintConfig;
-import net.thbtt.sprintinghorses.item.ModItems;
 import net.thbtt.sprintinghorses.network.HorseSprintInputPayload;
 import net.thbtt.sprintinghorses.network.HorseSprintStaminaPayload;
 import net.thbtt.sprintinghorses.sprint.HorseSprintInputs;
@@ -20,7 +19,6 @@ public class SprintingHorses implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		HorseSprintConfig.load();
-		ModItems.register();
 
 		PayloadTypeRegistry.playC2S().register(HorseSprintInputPayload.ID, HorseSprintInputPayload.CODEC);
 		PayloadTypeRegistry.playS2C().register(HorseSprintStaminaPayload.ID, HorseSprintStaminaPayload.CODEC);

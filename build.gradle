@@ -5,10 +5,73 @@ plugins {
 version = project.mod_version
 group = project.maven_group
 
+def targetMinecraftVersion = project.minecraft_version.toString()
+def minecraftDependency = (project.findProperty("minecraft_dependency") ?: "~${targetMinecraftVersion}").toString()
+def versionParts = { String version ->
+	def parts = version.replaceAll(/[^0-9.].*$/, "").tokenize(".").collect { it as int }
+	while (parts.size() < 3) {
+		parts.add(0)
+	}
+	return parts
+}
+def compareMinecraftVersions = { String left, String right ->
+	def leftParts = versionParts(left)
+	def rightParts = versionParts(right)
+	for (int i = 0; i < 3; i++) {
+		if (leftParts[i] != rightParts[i]) {
+			return leftParts[i] <=> rightParts[i]
+		}
+	}
+	return 0
+}
+def defaultCompatApi = "legacy"
+if (compareMinecraftVersions(targetMinecraftVersion, "1.21.11") >= 0) {
+	defaultCompatApi = "modern_1_21_11"
+} else if (compareMinecraftVersions(targetMinecraftVersion, "1.21.9") >= 0) {
+	defaultCompatApi = "modern_1_21_9"
+} else if (compareMinecraftVersions(targetMinecraftVersion, "1.21.6") >= 0) {
+	defaultCompatApi = "modern_1_21_6"
+} else if (compareMinecraftVersions(targetMinecraftVersion, "1.21.4") >= 0) {
+	defaultCompatApi = "modern"
+} else if (compareMinecraftVersions(targetMinecraftVersion, "1.21.2") >= 0) {
+	defaultCompatApi = "modern_1_21_2"
+}
+def compatApi = (project.findProperty("compat_api") ?: defaultCompatApi).toString()
+def defaultLoaderDependency = "0.15.11"
+if (compareMinecraftVersions(targetMinecraftVersion, "1.21.11") >= 0) {
+	defaultLoaderDependency = "0.17.3"
+} else if (compareMinecraftVersions(targetMinecraftVersion, "1.21.9") >= 0) {
+	defaultLoaderDependency = "0.17.0"
+} else if (compareMinecraftVersions(targetMinecraftVersion, "1.21.6") >= 0) {
+	defaultLoaderDependency = "0.16.13"
+} else if (compareMinecraftVersions(targetMinecraftVersion, "1.21.5") >= 0) {
+	defaultLoaderDependency = "0.16.10"
+} else if (compareMinecraftVersions(targetMinecraftVersion, "1.21.4") >= 0) {
+	defaultLoaderDependency = "0.16.9"
+} else if (compareMinecraftVersions(targetMinecraftVersion, "1.21.3") >= 0) {
+	defaultLoaderDependency = "0.16.8"
+} else if (compareMinecraftVersions(targetMinecraftVersion, "1.21.2") >= 0) {
+	defaultLoaderDependency = "0.16.7"
+}
+def loaderDependency = (project.findProperty("loader_dependency") ?: defaultLoaderDependency).toString()
+def javaDependency = (project.findProperty("java_dependency") ?: "21").toString()
+def defaultFabricApiDependency = project.fabric_api_version.toString().replaceAll(/\+.*/, "")
+def fabricApiDependency = (project.findProperty("fabric_api_dependency") ?: defaultFabricApiDependency).toString()
+
+base {
+	archivesName = "sprinting-horses-mc${targetMinecraftVersion}"
+}
+
 repositories {
 	maven {
 		name = "TerraformersMC"
 		url = "https://maven.terraformersmc.com/releases/"
+	}
+}
+
+sourceSets {
+	main {
+		java.srcDir("src/compat/${compatApi}/java")
 	}
 }
 
@@ -23,9 +86,19 @@ dependencies {
 processResources {
 	def version = project.version
 	inputs.property "version", version
+	inputs.property "minecraft_dependency", minecraftDependency
+	inputs.property "loader_dependency", loaderDependency
+	inputs.property "java_dependency", javaDependency
+	inputs.property "fabric_api_dependency", fabricApiDependency
 
 	filesMatching("fabric.mod.json") {
-		expand "version": version
+		expand(
+			"version": version,
+			"minecraft_dependency": minecraftDependency,
+			"loader_dependency": loaderDependency,
+			"java_dependency": javaDependency,
+			"fabric_api_dependency": fabricApiDependency
+		)
 	}
 }
 
@@ -47,4 +120,10 @@ jar {
 	from("LICENSE") {
 		rename { "${it}_$projectName"}
 	}
+}
+
+tasks.register("copyReleaseJar", Copy) {
+	dependsOn tasks.named("remapJar")
+	from(tasks.named("remapJar").flatMap { it.archiveFile })
+	into layout.projectDirectory.dir("releases-jar")
 }
