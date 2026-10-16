@@ -4,7 +4,7 @@ Sprinting Horses is a Minecraft Fabric mod that adds stamina-based sprinting to 
 
 Hold the sprint key while riding a supported equine to move faster. The mod adds a stamina bar above the vanilla horse jump bar and handles exhaustion.
 
-Current release: **1.0.0**
+Current release: **1.1.0**
 
 ## Features
 
@@ -66,24 +66,14 @@ Current release: **1.0.0**
 
 ## Compatibility
 
-- First public release 1.0.0: Minecraft 1.21.1
+- Public release 1.1.0: Minecraft 1.21.1
 - Mod loader: Fabric
 - Java: 21 or newer
 - Required: Fabric API 0.116.12 or newer for Minecraft 1.21.1
 - Environment: Client and Server
 - Optional integration: Mod Menu
 
-The source tree retains multiversion compatibility work, but other Minecraft versions are not included in the initial 1.0.0 publication and should not be considered validated for this release.
-
-## Release Builds
-
-Release jars are generated into `releases-jar`.
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\build-releases.ps1
-```
-
-Each jar is built against the matching Minecraft, mapping, Fabric API, and Mod Menu versions for that target. Minecraft 1.21.x builds use Yarn mappings and Java 21. Minecraft 26.x builds use Mojang official names and Java 25. For the initial 1.0.0 publication, build and publish only the Minecraft 1.21.1 artifact.
+The source tree retains multiversion compatibility work, but other Minecraft versions are not included in the initial 1.1.0 publication and should not be considered validated for this release.
 
 ## Support
 
