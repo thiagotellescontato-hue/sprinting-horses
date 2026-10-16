@@ -66,14 +66,10 @@ Current release: **1.1.0**
 
 ## Compatibility
 
-- Public release 1.1.0: Minecraft 1.21.1
 - Mod loader: Fabric
-- Java: 21 or newer
-- Required: Fabric API 0.116.12 or newer for Minecraft 1.21.1
+- Required: Fabric API
 - Environment: Client and Server
 - Optional integration: Mod Menu
-
-The source tree retains multiversion compatibility work, but other Minecraft versions are not included in the initial 1.1.0 publication and should not be considered validated for this release.
 
 ## Support
 
