@@ -4,7 +4,7 @@ Sprinting Horses is a Minecraft Fabric mod that adds stamina-based sprinting to 
 
 Hold the sprint key while riding a supported equine to move faster. The mod adds a stamina bar above the vanilla horse jump bar and handles exhaustion.
 
-Current release: **1.1.0**
+Current release: **1.0.0**
 
 ## Features
 
@@ -17,6 +17,26 @@ Current release: **1.1.0**
 | Jump Cost | Jumping spends stamina and is blocked while exhausted. |
 | Donkey and Mule Support | These mounts use the same control style without armor scaling. |
 | Undead Horse Support | Zombie horses sprint like normal horses; skeleton horses sprint without armor scaling. |
+
+## Compatibility Roadmap
+
+| Mod / Resource Pack | Status |
+| --- | --- |
+| Better Mount HUD | 🟨 In Development |
+| Chai's Better HUD | 🟥 Planned |
+| Raised | 🟥 Planned |
+| Horse Statistics | 🟥 Planned |
+| AppleSkin | 🟥 Planned |
+| Vanilla Tweaks HUD | 🟥 Planned |
+| Dark UI / GUI Resource Packs | 🟥 Planned |
+
+- 🟩 Supported — Compatibility tested and confirmed.
+- 🟨 In Development — Compatibility is being tested or receiving fixes.
+- 🟥 Planned — Compatibility has not been investigated yet.
+
+## Preview
+
+![Horse Running Preview](https://cdn.modrinth.com/data/cached_images/94e37ed78388c30cc02c909a62a1305a9605baa2.gif)
 
 ## How It Works
 
@@ -46,14 +66,14 @@ Current release: **1.1.0**
 
 ## Compatibility
 
-- Public release 1.1.0: Minecraft 1.21.1
+- First public release 1.0.0: Minecraft 1.21.1
 - Mod loader: Fabric
 - Java: 21 or newer
 - Required: Fabric API 0.116.12 or newer for Minecraft 1.21.1
 - Environment: Client and Server
 - Optional integration: Mod Menu
 
-The source tree retains multiversion compatibility work, but other Minecraft versions are not included in the initial 1.1.0 publication and should not be considered validated for this release.
+The source tree retains multiversion compatibility work, but other Minecraft versions are not included in the initial 1.0.0 publication and should not be considered validated for this release.
 
 ## Release Builds
 
@@ -63,7 +83,7 @@ Release jars are generated into `releases-jar`.
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\build-releases.ps1
 ```
 
-Each jar is built against the matching Minecraft, mapping, Fabric API, and Mod Menu versions for that target. Minecraft 1.21.x builds use Yarn mappings and Java 21. Minecraft 26.x builds use Mojang official names and Java 25. For the initial 1.1.0 publication, build and publish only the Minecraft 1.21.1 artifact.
+Each jar is built against the matching Minecraft, mapping, Fabric API, and Mod Menu versions for that target. Minecraft 1.21.x builds use Yarn mappings and Java 21. Minecraft 26.x builds use Mojang official names and Java 25. For the initial 1.0.0 publication, build and publish only the Minecraft 1.21.1 artifact.
 
 ## Support
 

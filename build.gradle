@@ -67,6 +67,13 @@ repositories {
 		name = "TerraformersMC"
 		url = "https://maven.terraformersmc.com/releases/"
 	}
+	maven {
+		name = "Modrinth"
+		url = "https://api.modrinth.com/maven"
+		content {
+			includeGroup "maven.modrinth"
+		}
+	}
 }
 
 sourceSets {
@@ -80,7 +87,14 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
-	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+	modCompileOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
+	modLocalRuntime "com.terraformersmc:modmenu:${project.modmenu_version}"
+	testImplementation "org.junit.jupiter:junit-jupiter:5.11.4"
+	testRuntimeOnly "org.junit.platform:junit-platform-launcher:1.11.4"
+}
+
+tasks.named("test") {
+	useJUnitPlatform()
 }
 
 processResources {

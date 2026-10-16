@@ -3,5 +3,8 @@
 	"sprintinghorses.config.exhaustion": "Modo de exaustão: %s",
 	"sprintinghorses.config.exhaustion.on": "On",
 	"sprintinghorses.config.exhaustion.partial": "Parcial",
-	"sprintinghorses.config.exhaustion.off": "Off"
+	"sprintinghorses.config.exhaustion.off": "Off",
+	"sprintinghorses.config.sprint_activation": "Ativação do sprint: %s",
+	"sprintinghorses.config.sprint_activation.hold": "Segurar",
+	"sprintinghorses.config.sprint_activation.toggle": "Alternar"
 }

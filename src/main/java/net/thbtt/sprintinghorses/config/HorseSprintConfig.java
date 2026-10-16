@@ -74,6 +74,23 @@ public final class HorseSprintConfig {
 		setExhaustionMode(getExhaustionMode().next());
 	}
 
+	public static SprintActivationMode getSprintActivation() {
+		if (data.sprintActivation == null) {
+			data.sprintActivation = SprintActivationMode.HOLD;
+		}
+
+		return data.sprintActivation;
+	}
+
+	public static void setSprintActivation(SprintActivationMode mode) {
+		data.sprintActivation = mode;
+		save();
+	}
+
+	public static void cycleSprintActivation() {
+		setSprintActivation(getSprintActivation().next());
+	}
+
 	public enum ExhaustionMode {
 		ON,
 		PARTIAL,
@@ -91,5 +108,6 @@ public final class HorseSprintConfig {
 	private static final class Data {
 		private ExhaustionMode exhaustionMode;
 		private boolean exhaustionEnabled = true;
+		private SprintActivationMode sprintActivation = SprintActivationMode.HOLD;
 	}
 }

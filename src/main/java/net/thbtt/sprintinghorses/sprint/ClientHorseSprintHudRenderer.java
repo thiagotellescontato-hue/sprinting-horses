@@ -27,7 +27,7 @@ public final class ClientHorseSprintHudRenderer {
 		}
 
 		int x = context.getScaledWindowWidth() / 2 - 91;
-		int y = context.getScaledWindowHeight() - 37;
+		int y = context.getScaledWindowHeight() - 29;
 		int width = 182;
 		int progress = Math.round(ClientHorseSprintHud.getStamina() * width);
 		Identifier progressTexture = ClientHorseSprintHud.isExhausted() ? STAMINA_BAR_PROGRESS_RED : STAMINA_BAR_PROGRESS;
@@ -39,8 +39,10 @@ public final class ClientHorseSprintHudRenderer {
 	}
 
 	private static boolean shouldRender(MinecraftClient client) {
-		return HorseSprintConfig.isStaminaEnabled()
-			&& client.player != null
-			&& HorseSprintLogic.isSprintMount(client.player.getVehicle());
+		return ClientHorseSprintHudVisibility.shouldRender(
+			client.options.hudHidden,
+			HorseSprintConfig.isStaminaEnabled(),
+			client.player != null && HorseSprintLogic.isSprintMount(client.player.getVehicle())
+		);
 	}
 }

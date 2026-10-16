@@ -2,6 +2,7 @@ package net.thbtt.sprintinghorses;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.thbtt.sprintinghorses.config.HorseSprintConfig;
 import net.thbtt.sprintinghorses.network.HorseSprintInputPayload;
@@ -25,6 +26,10 @@ public class SprintingHorses implements ModInitializer {
 
 		ServerPlayNetworking.registerGlobalReceiver(HorseSprintInputPayload.ID, (payload, context) ->
 			context.server().execute(() -> HorseSprintInputs.setPressed(context.player(), payload.pressed()))
+		);
+
+		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) ->
+			HorseSprintInputs.setPressed(handler.player, false)
 		);
 	}
 }

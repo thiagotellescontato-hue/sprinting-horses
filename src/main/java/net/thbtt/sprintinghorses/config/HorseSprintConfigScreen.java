@@ -18,10 +18,15 @@ public class HorseSprintConfigScreen extends Screen {
 		addDrawableChild(ButtonWidget.builder(getExhaustionButtonText(), button -> {
 			HorseSprintConfig.cycleExhaustionMode();
 			button.setMessage(getExhaustionButtonText());
-		}).dimensions(width / 2 - 100, height / 2 - 10, 200, 20).build());
+		}).dimensions(width / 2 - 100, height / 2 - 22, 200, 20).build());
+
+		addDrawableChild(ButtonWidget.builder(getSprintActivationButtonText(), button -> {
+			HorseSprintConfig.cycleSprintActivation();
+			button.setMessage(getSprintActivationButtonText());
+		}).dimensions(width / 2 - 100, height / 2 + 2, 200, 20).build());
 
 		addDrawableChild(ButtonWidget.builder(Text.translatable("gui.done"), button -> close())
-			.dimensions(width / 2 - 100, height / 2 + 24, 200, 20)
+			.dimensions(width / 2 - 100, height / 2 + 36, 200, 20)
 			.build());
 	}
 
@@ -43,6 +48,13 @@ public class HorseSprintConfigScreen extends Screen {
 		return Text.translatable(
 			"sprintinghorses.config.exhaustion",
 			Text.translatable("sprintinghorses.config.exhaustion." + HorseSprintConfig.getExhaustionMode().name().toLowerCase())
+		);
+	}
+
+	private Text getSprintActivationButtonText() {
+		return Text.translatable(
+			"sprintinghorses.config.sprint_activation",
+			Text.translatable("sprintinghorses.config.sprint_activation." + HorseSprintConfig.getSprintActivation().name().toLowerCase())
 		);
 	}
 }
